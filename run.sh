@@ -16,6 +16,7 @@ create_files () {
     docker cp generated-data/input.txt namenode:/root/input/
 
     echo "[+] Copying input file to HDFS"
+    docker exec namenode hadoop fs -mkdir -p . # Create directory for root user
     docker exec namenode hdfs dfs -put /root/input/ input
 
     echo "[+] Copying input map file to container"
