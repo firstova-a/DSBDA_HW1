@@ -12,17 +12,14 @@ import org.apache.log4j.Logger
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 
-/**
-  * Mapper class, implements map() and setup() methods of the base Mapper class.
-  *
+/** Mapper class, implements map() and setup() methods of the base Mapper class.
   */
 class TaskMapper extends Mapper[Object, Text, IntWritable, IntWritable] {
   val logger = Logger.getLogger(this.getClass())
   val one = new IntWritable(1)
   val areasMap = mutable.Map[(Int, Int, Int, Int), Int]()
 
-  /**
-    * The function for setup and areas file importing, which contains areas coordinates.
+  /** The function for setup and areas file importing, which contains areas coordinates.
     *
     * @param context The context for this Mapper
     */
@@ -47,8 +44,7 @@ class TaskMapper extends Mapper[Object, Text, IntWritable, IntWritable] {
 
   }
 
-  /**
-    * Map function, which operates over single record. It maps input string to a pair:
+  /** Map function, which operates over single record. It maps input string to a pair:
     * <area number> -> <1 click>
     *
     * @param key  The key of a record, unused.
@@ -66,15 +62,15 @@ class TaskMapper extends Mapper[Object, Text, IntWritable, IntWritable] {
       ]#Context
   ): Unit = {
     val Array(x, y, userId, timestamp) = value.toString.split(",").map(_.toInt)
-    val possibleAreas = for (((x0, x1, y0, y1), areaNumber) <- areasMap) yield {
-      if (x >= x0 && x <= x1 && y >= y0 && y <= y1) {
-        Some(areaNumber)
-      } else {
-        None
+    val possibleAreas =
+      for (
+        ((x0, x1, y0, y1), areaNumber) <- areasMap
+        if x >= x0 && x <= x1 && y >= y0 && y <= y1
+      ) yield {
+        areaNumber
       }
-    }
 
-    possibleAreas.toList.flatten.headOption match {
+    possibleAreas.headOption match {
       case Some(areaNumber) =>
         context.write(
           new IntWritable(areaNumber),

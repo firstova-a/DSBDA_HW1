@@ -37,13 +37,12 @@ class TaskReducer extends Reducer[IntWritable, IntWritable, Text, Text] {
   ): Unit = {
     val sum = values.asScala.foldLeft(0)((x, y) => x + y.get())
     val temp =
-      (for (((lowerBound, upperBound), temperature) <- tempDict) yield {
-        if (sum >= lowerBound && sum < upperBound) {
-          Some(temperature)
-        } else {
-          None
-        }
-      }).flatten.head
+      (for (
+        ((lowerBound, upperBound), temperature) <- tempDict
+        if sum >= lowerBound && sum < upperBound
+      ) yield {
+        temperature
+      }).head
 
     val resultKey = new Text(s"area-$key")
     val resultValue = new Text(s"$sum ($temp)")
