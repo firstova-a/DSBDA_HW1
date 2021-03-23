@@ -66,6 +66,6 @@ class MapReduceTest extends AnyFlatSpec with MockitoSugar {
 
     reducer.reduce(key, values.asJava, context)
 
-    verify(context).write(key, new IntWritable(15))
+    verify(context).write(new Text("area-1"), new Text("15 (warm)"))
   }
 }

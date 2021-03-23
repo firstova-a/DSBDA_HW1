@@ -9,10 +9,14 @@ import org.apache.hadoop.fs.Path
 import Task.{TaskMapper, TaskReducer}
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.log4j.Logger
+import org.apache.hadoop.io.Text
 
-/** Main class for program run.
+/** Main class for program run (driver class).
   */
 object Main {
+
+  /** Logger object.
+    */
   val logger = Logger.getLogger(this.getClass)
 
   /** Main function.
@@ -29,11 +33,15 @@ object Main {
     job.setJarByClass(this.getClass)
     job.setMapperClass(classOf[TaskMapper])
     job.setReducerClass(classOf[TaskReducer])
-    job.setOutputKeyClass(classOf[IntWritable])
-    job.setOutputValueClass(classOf[IntWritable])
+
+    job.setMapOutputKeyClass(classOf[IntWritable])
+    job.setMapOutputValueClass(classOf[IntWritable])
+
+    job.setOutputKeyClass(classOf[Text])
+    job.setOutputValueClass(classOf[Text])
 
     job.setOutputFormatClass(
-      classOf[SequenceFileOutputFormat[IntWritable, IntWritable]]
+      classOf[SequenceFileOutputFormat[Text, Text]]
     )
 
     FileInputFormat.addInputPath(job, new Path(inputFilePath))
