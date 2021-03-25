@@ -15,8 +15,17 @@ import scala.collection.mutable
 /** Mapper class, implements map() and setup() methods of the base Mapper class.
   */
 class TaskMapper extends Mapper[Object, Text, IntWritable, IntWritable] {
+
+  /** Logger object.
+    */
   val logger = Logger.getLogger(this.getClass())
+
+  /** `One` constant
+    */
   val one = new IntWritable(1)
+
+  /** Map (hash table) of areas: between coordiates of an area and its number. <(xMin, xMax, yMin, yMax) -> areaNumber>.
+    */
   val areasMap = mutable.Map[(Int, Int, Int, Int), Int]()
 
   /** The function for setup and areas file importing, which contains areas coordinates.
@@ -27,7 +36,7 @@ class TaskMapper extends Mapper[Object, Text, IntWritable, IntWritable] {
       context: Mapper[Object, Text, IntWritable, IntWritable]#Context
   ): Unit = {
     val areasFilePath = new Path("hdfs:/user/root/support-data/areas.txt")
-    val fs = FileSystem.get(new Configuration());
+    val fs = FileSystem.get(new Configuration())
     val reader = new BufferedReader(
       new InputStreamReader(fs.open(areasFilePath))
     )
@@ -41,7 +50,6 @@ class TaskMapper extends Mapper[Object, Text, IntWritable, IntWritable] {
     }
 
     logger.info(s"Areas map: ${areasMap}")
-
   }
 
   /** Map function, which operates over single record. It maps input string to a pair:
@@ -74,11 +82,10 @@ class TaskMapper extends Mapper[Object, Text, IntWritable, IntWritable] {
       case Some(areaNumber) =>
         context.write(
           new IntWritable(areaNumber),
-          new IntWritable(1)
+          one
         )
       case None =>
         context.getCounter("Mapper", "Missed").increment(1)
     }
-
   }
 }

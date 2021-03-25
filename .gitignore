@@ -5,8 +5,6 @@
 .metals/
 .vscode/
 **__pycache__/
-target/
+**/target/
 project/*/
 generated-data/
-out*
-**/Task1/

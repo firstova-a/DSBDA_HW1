@@ -58,7 +58,7 @@ create_files () {
     docker exec namenode mkdir -p /root/support-data/
 
     echo "[Container] Creating directory for jars"
-    docker exec namenode mkdir -p /root/jars
+    docker exec namenode mkdir -p /root/jars/
 
     echo
 
